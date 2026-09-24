@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marcello Benigno Borges de Barros Filho — Geoprocessamento IFPB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Literata:ital,opsz,wght@0,7..72,300..700;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF2EC;
+  --paper-2:#E2E9E0;
+  --ink:#1B2F4A;
+  --ink-soft:#4A5B70;
+  --contour:#8A5A2B;
+  --water:#2F6E96;
+  --veg:#5F7D42;
+  --line:rgba(27,47,74,.18);
+  --sans:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --serif:"Literata", Georgia, "Times New Roman", serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131C27; --paper-2:#1A2533; --ink:#E4EAE2; --ink-soft:#A5B2C0;
+    --contour:#C99263; --water:#6AAED6; --veg:#9CBB7C; --line:rgba(228,234,226,.16);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131C27; --paper-2:#1A2533; --ink:#E4EAE2; --ink-soft:#A5B2C0;
+  --contour:#C99263; --water:#6AAED6; --veg:#9CBB7C; --line:rgba(228,234,226,.16);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--water);text-underline-offset:.18em}
+a:focus-visible,button:focus-visible{outline:2px solid var(--water);outline-offset:3px;border-radius:2px}
+img{max-width:100%}
+
+/* ---------- HERO: folha de carta ---------- */
+.sheet{position:relative;min-height:92vh;margin:clamp(.75rem,2vw,1.5rem);border:1.5px solid var(--ink);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.sheet::after{content:"";position:absolute;inset:8px;border:.5px solid var(--line);pointer-events:none}
+#topo{position:absolute;inset:0;width:100%;height:100%}
+#topo path{fill:none;stroke:var(--contour);stroke-width:.9;opacity:.55}
+#topo path.index{stroke-width:1.7;opacity:.8}
+#topo path.river{stroke:var(--water);stroke-width:2.2;opacity:.75}
+.ticks{position:absolute;font-family:var(--sans);font-size:.7rem;font-variation-settings:"wdth" 80;color:var(--ink-soft);letter-spacing:.02em}
+.ticks.t{top:12px;left:0;right:0;display:flex;justify-content:space-around}
+.ticks.l{left:14px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-around;writing-mode:vertical-rl;transform:rotate(180deg)}
+.hero-text{position:relative;padding:clamp(2rem,6vw,5rem);padding-top:8rem;max-width:62rem}
+.hero-text h1{font-family:var(--sans);font-weight:780;font-variation-settings:"wdth" 68;font-size:clamp(2.6rem,8.2vw,6.6rem);line-height:.92;letter-spacing:-.01em;margin:0 0 1.5rem;text-wrap:balance}
+.hero-text h1 span{display:block}
+.role{font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,2.2vw,1.5rem);margin:0 0 2rem;max-width:34ch;color:var(--ink)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:.75rem}
+.btn{font-family:var(--sans);font-weight:600;font-size:.95rem;padding:.7rem 1.2rem;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;background:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn:hover{background:var(--water);border-color:var(--water);color:#fff}
+.marker{position:absolute;right:clamp(1.5rem,6vw,5rem);top:clamp(3rem,10vh,6rem);font-family:var(--sans);font-size:.8rem;font-variation-settings:"wdth" 85;color:var(--ink-soft);text-align:right;line-height:1.4}
+.marker b{display:block;color:var(--ink);font-size:.95rem}
+.marker::before{content:"";display:block;width:14px;height:14px;border:2px solid var(--ink);border-radius:50%;margin:0 0 .5rem auto;box-shadow:0 0 0 4px var(--paper),0 0 0 5px var(--ink)}
+
+/* ---------- Corpo ---------- */
+main{max-width:72rem;margin:0 auto;padding:0 clamp(1.25rem,5vw,3rem)}
+section{display:grid;grid-template-columns:minmax(0,14rem) minmax(0,1fr);gap:2rem 3rem;padding:4.5rem 0;border-top:1px solid var(--line)}
+section:first-child{border-top:0}
+section > h2{font-family:var(--sans);font-weight:700;font-variation-settings:"wdth" 75;font-size:1.6rem;line-height:1.1;margin:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 1.5rem);align-self:start}
+.body{max-width:44rem}
+.lede{font-size:1.25rem;line-height:1.6;margin-top:0}
+p{margin:0 0 1rem}
+
+/* linha do tempo = sequência real */
+.timeline{list-style:none;margin:0;padding:0;position:relative}
+.timeline::before{content:"";position:absolute;left:5.25rem;top:.5rem;bottom:.5rem;border-left:1.5px dashed var(--contour)}
+.timeline li{display:grid;grid-template-columns:4.5rem 1fr;gap:0 1.75rem;padding:0 0 2rem}
+.timeline li:last-child{padding-bottom:0}
+.when{font-family:var(--sans);font-variation-settings:"wdth" 80;font-weight:600;font-size:.9rem;color:var(--ink-soft);text-align:right;padding-top:.2rem}
+.what{position:relative}
+.what::before{content:"";position:absolute;left:-1.95rem;top:.55rem;width:9px;height:9px;background:var(--paper);border:2px solid var(--contour);transform:rotate(45deg)}
+.what h3{font-family:var(--sans);font-weight:650;font-size:1.1rem;margin:0;line-height:1.3}
+.what .org{font-style:italic;color:var(--ink-soft);margin:0 0 .35rem}
+.what p:last-child{margin:0}
+
+/* legenda cartográfica para competências */
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.5rem 2.5rem;margin:0}
+.legend dt{font-family:var(--sans);font-weight:650;display:flex;align-items:center;gap:.7rem;margin-bottom:.3rem}
+.legend dd{margin:0 0 0 2.1rem;color:var(--ink-soft);font-size:.98rem}
+.sym{flex:none;width:1.4rem;height:1rem;display:inline-block}
+.sym.poly{background:color-mix(in srgb,var(--veg) 35%,transparent);border:1.5px solid var(--veg)}
+.sym.lineal{height:0;border-top:2.5px solid var(--water)}
+.sym.pt{width:.8rem;height:.8rem;margin:0 .3rem;border-radius:50%;background:var(--contour)}
+.sym.cont{height:.9rem;background:repeating-linear-gradient(0deg,transparent 0 3px,var(--contour) 3px 4px)}
+.sym.grid{background-image:linear-gradient(var(--ink) 1px,transparent 1px),linear-gradient(90deg,var(--ink) 1px,transparent 1px);background-size:.45rem .45rem;opacity:.7}
+.sym.hatch{background:repeating-linear-gradient(45deg,var(--ink-soft) 0 1.5px,transparent 1.5px 5px);border:1px solid var(--ink-soft)}
+
+/* disciplinas */
+.courses{columns:2 16rem;column-gap:3rem;margin:0;padding:0;list-style:none}
+.courses li{break-inside:avoid;padding:.55rem 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem}
+.courses small{font-family:var(--sans);font-variation-settings:"wdth" 80;color:var(--ink-soft);white-space:nowrap}
+
+/* projetos */
+.projects{display:grid;gap:2.25rem}
+.project h3{font-family:var(--sans);font-weight:700;font-variation-settings:"wdth" 85;font-size:1.3rem;margin:0 0 .25rem}
+.project .meta{font-family:var(--sans);font-size:.85rem;color:var(--ink-soft);margin:0 0 .6rem}
+.project{padding-left:1.25rem;border-left:3px solid var(--water)}
+.project:nth-child(2){border-color:var(--veg)}
+.project:nth-child(3){border-color:var(--contour)}
+
+/* publicações */
+.pubs{margin:0;padding-left:1.25rem}
+.pubs li{margin-bottom:1rem;padding-left:.35rem}
+.pubs li::marker{font-family:var(--sans);color:var(--ink-soft);font-size:.85rem}
+.pubs em{font-style:italic}
+
+/* contato */
+.contact dl{display:grid;grid-template-columns:auto 1fr;gap:.6rem 1.5rem;margin:1.5rem 0 0}
+.contact dt{font-family:var(--sans);font-weight:600;font-size:.92rem;color:var(--ink-soft)}
+.contact dd{margin:0;overflow-wrap:anywhere}
+
+footer{max-width:72rem;margin:0 auto;padding:2rem clamp(1.25rem,5vw,3rem) 3rem;font-family:var(--sans);font-size:.82rem;color:var(--ink-soft);display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;border-top:1.5px solid var(--ink)}
+.scale{display:flex;align-items:flex-end;gap:0}
+.scale i{display:block;width:2.2rem;height:.4rem;border:1px solid var(--ink-soft)}
+.scale i:nth-child(odd){background:var(--ink-soft)}
+
+@media (max-width:760px){
+  section{grid-template-columns:1fr;gap:1.5rem;padding:3.25rem 0}
+  section > h2{position:static}
+  .marker{top:2.2rem;right:1.4rem;font-size:.72rem}
+  .ticks.l{display:none}
+  .timeline::before{left:4.1rem}
+  .timeline li{grid-template-columns:3.4rem 1fr;gap:0 1.6rem}
+  .what::before{left:-1.8rem}
+}
+@media (prefers-reduced-motion: no-preference){
+  #topo path{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 2.4s cubic-bezier(.3,.6,.2,1) forwards;animation-delay:var(--d)}
+  @keyframes draw{to{stroke-dashoffset:0}}
+}
+</style>
+</head>
+<body>
+
+<header class="sheet" aria-label="Apresentação">
+  <svg id="topo" aria-hidden="true" preserveAspectRatio="xMidYMid slice"></svg>
+  <div class="ticks t" aria-hidden="true"><span>34°56′W</span><span>34°54′W</span><span>34°52′W</span><span>34°50′W</span></div>
+  <div class="ticks l" aria-hidden="true"><span>7°10′S</span><span>7°08′S</span><span>7°06′S</span></div>
+  <div class="marker" aria-hidden="true"><b>João Pessoa, PB</b>7°06′54″S · 34°51′47″W</div>
+
+  <div class="hero-text">
+    <h1><span>Marcello Benigno</span><span>Borges de Barros</span><span>Filho</span></h1>
+    <p class="role">Professor do Curso de Tecnologia em Geoprocessamento do IFPB</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#contato">Entrar em contato</a>
+      <a class="btn" href="#trajetoria">Ver trajetória</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="sobre">
+    <h2>Sobre</h2>
+    <div class="body">
+      <p class="lede">Ensino e pesquiso cartografia, geoprocessamento e gestão territorial, com foco em transformar dados espaciais em decisões sobre o uso da terra.</p>
+      <p>Há mais de uma década trabalho na interseção entre a geodésia de campo e o desenvolvimento de sistemas de informação geográfica. No IFPB, coordeno projetos que conectam estudantes a demandas reais de municípios e órgãos públicos da Paraíba — do georreferenciamento de imóveis rurais ao cadastro territorial multifinalitário.</p>
+      <p>Acredito que um bom mapa começa na sala de aula e termina nas mãos de quem decide sobre o território.</p>
+    </div>
+  </section>
+
+  <section id="trajetoria">
+    <h2>Trajetória profissional</h2>
+    <div class="body">
+      <ol class="timeline" reversed>
+        <li><span class="when">2016 — hoje</span><div class="what"><h3>Professor EBTT</h3><p class="org">Instituto Federal da Paraíba, Campus João Pessoa</p><p>Docente do Curso Superior de Tecnologia em Geoprocessamento. Coordenador do Laboratório de Cartografia e Análise Territorial (LabCAT) desde 2019.</p></div></li>
+        <li><span class="when">2012 — 2016</span><div class="what"><h3>Analista de Geoprocessamento</h3><p class="org">Secretaria de Planejamento do Estado da Paraíba</p><p>Estruturação da base cartográfica estadual e apoio técnico a municípios na implantação de cadastros territoriais.</p></div></li>
+        <li><span class="when">2009 — 2012</span><div class="what"><h3>Responsável técnico em georreferenciamento</h3><p class="org">Consultoria autônoma</p><p>Levantamentos geodésicos com GNSS e certificação de imóveis rurais junto ao INCRA/SIGEF.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="formacao">
+    <h2>Formação</h2>
+    <div class="body">
+      <ol class="timeline" reversed>
+        <li><span class="when">2021</span><div class="what"><h3>Doutorado em Engenharia Civil e Ambiental</h3><p class="org">Universidade Federal de Campina Grande</p><p>Tese: modelagem de fragilidade ambiental em bacias do semiárido paraibano a partir de dados morfométricos e de uso do solo.</p></div></li>
+        <li><span class="when">2014</span><div class="what"><h3>Mestrado em Engenharia Urbana e Ambiental</h3><p class="org">Universidade Federal da Paraíba</p><p>Dissertação: cadastro territorial multifinalitário como instrumento de planejamento em municípios de pequeno porte.</p></div></li>
+        <li><span class="when">2008</span><div class="what"><h3>Graduação em Engenharia Cartográfica e de Agrimensura</h3><p class="org">Universidade Federal de Pernambuco</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="competencias">
+    <h2>Áreas de atuação</h2>
+    <div class="body">
+      <dl class="legend">
+        <div><dt><span class="sym poly" aria-hidden="true"></span>Gestão territorial</dt><dd>CAR, SIGEF, SNCI e regularização fundiária rural e urbana.</dd></div>
+        <div><dt><span class="sym grid" aria-hidden="true"></span>Cartografia sistemática</dt><dd>Projeções, SGB/SIRGAS 2000 e produção de cartas temáticas.</dd></div>
+        <div><dt><span class="sym pt" aria-hidden="true"></span>Geodésia e GNSS</dt><dd>Posicionamento de precisão, RTK e processamento de dados de campo.</dd></div>
+        <div><dt><span class="sym lineal" aria-hidden="true"></span>Hidrologia espacial</dt><dd>Delimitação de bacias e análise morfométrica com MDE.</dd></div>
+        <div><dt><span class="sym cont" aria-hidden="true"></span>Solos e uso da terra</dt><dd>Aptidão agrícola, fragilidade ambiental e mapeamento de cobertura.</dd></div>
+        <div><dt><span class="sym hatch" aria-hidden="true"></span>WebGIS e bancos espaciais</dt><dd>PostGIS, QGIS, GeoPackage, Python e aplicações web com Leaflet.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="disciplinas">
+    <h2>Disciplinas ministradas</h2>
+    <div class="body">
+      <ul class="courses">
+        <li>Cartografia Sistemática <small>1º período</small></li>
+        <li>Topografia e Geodésia <small>2º período</small></li>
+        <li>Sistemas de Informação Geográfica <small>3º período</small></li>
+        <li>Sensoriamento Remoto <small>3º período</small></li>
+        <li>Banco de Dados Geográficos <small>4º período</small></li>
+        <li>Georreferenciamento de Imóveis Rurais <small>5º período</small></li>
+        <li>Cadastro Territorial Multifinalitário <small>5º período</small></li>
+        <li>Projeto Integrador em Geoprocessamento <small>6º período</small></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="projetos">
+    <h2>Projetos em destaque</h2>
+    <div class="body projects">
+      <article class="project">
+        <h3>SIG Municipal Integrado</h3>
+        <p class="meta">Extensão · 2022 — atual · Parceria com prefeituras do Litoral Norte</p>
+        <p>Sistema web de cadastro territorial em Django e PostGIS, implantado em três municípios, com módulos de imóveis, logradouros e emissão de certidões.</p>
+      </article>
+      <article class="project">
+        <h3>Atlas Hídrico do Semiárido Paraibano</h3>
+        <p class="meta">Pesquisa · 2020 — 2024 · Fomento FAPESQ</p>
+        <p>Caracterização morfométrica de 47 sub-bacias e publicação dos resultados em plataforma WebGIS de acesso aberto.</p>
+      </article>
+      <article class="project">
+        <h3>Georreferenciamento Solidário</h3>
+        <p class="meta">Extensão · 2018 — atual</p>
+        <p>Estudantes realizam, sob supervisão, levantamentos e inscrição no CAR de pequenas propriedades de agricultura familiar.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="publicacoes">
+    <h2>Publicações selecionadas</h2>
+    <div class="body">
+      <ol class="pubs" reversed>
+        <li>Barros Filho, M. B. B.; Almeida, R. S. Índices morfométricos e fragilidade ambiental em bacias do semiárido. <em>Revista Brasileira de Cartografia</em>, v. 76, 2024.</li>
+        <li>Barros Filho, M. B. B.; Costa, L. F. Cadastro territorial em municípios de pequeno porte: um modelo aberto baseado em PostGIS. <em>Boletim de Ciências Geodésicas</em>, v. 29, 2023.</li>
+        <li>Barros Filho, M. B. B. et al. Integração entre CAR e SIGEF: inconsistências espaciais na Paraíba. In: <em>Simpósio Brasileiro de Sensoriamento Remoto</em>, 2023.</li>
+        <li>Barros Filho, M. B. B. <em>Geoprocessamento aplicado à gestão territorial</em>. João Pessoa: Editora IFPB, 2022.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="contato" class="contact">
+    <h2>Contato</h2>
+    <div class="body">
+      <p class="lede">Aberto a parcerias de pesquisa, extensão e orientação de trabalhos em geoprocessamento.</p>
+      <dl>
+        <dt>E-mail</dt><dd><a href="mailto:marcello.barros@ifpb.edu.br">marcello.barros@ifpb.edu.br</a></dd>
+        <dt>Lattes</dt><dd><a href="#contato">lattes.cnpq.br/0000000000000000</a></dd>
+        <dt>Laboratório</dt><dd>LabCAT · Bloco de Geoprocessamento, IFPB Campus João Pessoa</dd>
+        <dt>Endereço</dt><dd>Av. Primeiro de Maio, 720 — Jaguaribe, João Pessoa, PB</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 Marcello Benigno Borges de Barros Filho</span>
+  <span class="scale" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span>Datum SIRGAS 2000</span>
+</footer>
+
+<script>
+(function(){
+  const svg = document.getElementById('topo');
+  const W = 1600, H = 1000, NS = 'http://www.w3.org/2000/svg';
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  // colinas: centro, raio base, número de curvas, fase
+  const hills = [
+    {cx:1180, cy:360, r:520, n:14, ph:0.7},
+    {cx:260,  cy:180, r:340, n:8,  ph:2.1},
+    {cx:720,  cy:980, r:380, n:9,  ph:4.0}
+  ];
+  let delay = 0;
+  function add(d, cls){
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d', d);
+    if (cls) p.setAttribute('class', cls);
+    svg.appendChild(p);
+    try{
+      const len = Math.ceil(p.getTotalLength());
+      p.style.setProperty('--len', len);
+      p.style.setProperty('--d', (delay += 0.05).toFixed(2) + 's');
+    }catch(e){}
+  }
+  hills.forEach(h => {
+    for (let k = 1; k <= h.n; k++){
+      const r = h.r * (k / h.n);
+      const pts = [];
+      const steps = 120;
+      for (let i = 0; i <= steps; i++){
+        const t = (i / steps) * Math.PI * 2;
+        const wob = 1 + 0.13*Math.sin(3*t + h.ph + k*0.18)
+                      + 0.07*Math.sin(5*t - h.ph*1.3 + k*0.11)
+                      + 0.04*Math.cos(8*t + k*0.3);
+        const x = h.cx + Math.cos(t) * r * wob * 1.25;
+        const y = h.cy + Math.sin(t) * r * wob * 0.82;
+        pts.push((i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1));
+      }
+      add(pts.join(' ') + 'Z', k % 5 === 0 ? 'index' : '');
+    }
+  });
+  // rio descendo entre as colinas
+  add('M560 -20 C 600 180, 520 300, 640 430 S 820 620, 760 760 S 900 940, 1040 1030', 'river');
+})();
+</script>
+</body>
+</html>
